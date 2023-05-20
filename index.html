@@ -1,0 +1,45 @@
+<html>
+<head>
+
+<title>Hanoi Classic</title>
+
+<style>
+
+html {
+	background-color: #FFFFFF;
+
+}
+
+.divbg {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	background-color: #0f0;
+	z-index: 1;
+
+	opacity: 0;
+	background-image: url("images/bg.jpg");
+	background-size: 300px;
+}
+
+iframe {
+	/*border: 5px #000 groove;*/
+	width: 700px;
+	height: 400px;
+	position: absolute; 
+	top: 50%;
+	left: 50%;
+	margin-left: -350px;
+	margin-top: -200px;
+	z-index: 2;
+}
+</style>
+</head>
+<body>
+<div class="divbg"></div>
+<iframe frameborder="0" scrolling="no" src="hanoi.html" style=""></iframe>
+</body>
+</html>
