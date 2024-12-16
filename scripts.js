@@ -6,6 +6,8 @@ var room_spr;
 var vp_width = 700;
 var vp_height = 400;
 
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 
 window.onload = function(){
 	room_spr = new Spriter("room_anim", 700, 400, "./images/room_sprite.jpg", 10, 59, 1, 0, true);
@@ -20,6 +22,9 @@ window.onload = function(){
 	place_towers();
 
 	logo_intro([all2desk, show_book, show_book_menu]);
+}
+window.oncontextmenu = function(evt){
+	evt.preventDefault();
 }
 
 function incdisk(inc,input_id){
@@ -1329,7 +1334,7 @@ function handle_mode1_up(evt){
 
 
 // making top disks draggable
-document.onmousedown = function(evt){
+function mousedown(evt){
 	if(!enabled) return;
 	if(evt.clientY < 55){
 		setting_control = evt.clientX > ctrl_pos[0] && evt.clientX < ctrl_pos[2];
@@ -1341,7 +1346,7 @@ document.onmousedown = function(evt){
 }
 
 
-document.onmousemove = function(evt){
+function mousemove(evt){
 	if(!enabled) return;
 	if(setting_control){
 		var pin = document.getElementById("controlind");
@@ -1371,7 +1376,7 @@ function set_mode(newmode){
 	}
 }
 
-document.onmouseup = function(evt){
+function mouseup(evt){
 	if(!enabled) return;
 	if(setting_control){
 		var pin = document.getElementById("controlind");
@@ -1390,6 +1395,16 @@ document.onmouseup = function(evt){
 
 	if(mode <= 1) // for both mouse modes
 		window["handle_mode"+mode+"_up"](evt)
+}
+
+if (isMobile) {
+	addEventListener("touchstart", function(evt){ mousedown(evt.touches[0]) });
+	addEventListener("touchmove", function(evt){ mousemove(evt.touches[0]) });
+	addEventListener("touchend", function(evt){ mouseup(evt.changedTouches[0]) });
+} else {
+	document.onmousedown = mousedown;
+	document.onmousemove = mousemove;
+	document.onmouseup = mouseup;
 }
 
 
