@@ -105,6 +105,7 @@ function fall_raise_book(value){
 function show_book(anims){
 	var fall_twn = new AdvTween(Elastic.prototype.easeInOut, 0, 1, 24, false, fall_raise_book);
 	fall_twn.onMotionFinished = function(){
+		document.getElementById("book_menu_pages").style.display="";
 		book_spr.gotoAndPlay(0);
 		book_spr.onFrameChange = function(frame){
 			if(frame == book_spr.spriteData._totalTiles-1){
@@ -256,7 +257,7 @@ function set_book_page(page){
 		markup += '<br><p>Other:</p>';
 		markup += '<table style="font-size: 12px; text-align: center; width: 200px;">';
 		markup += '<tr>';
-		markup += '<th>pause</th><td><div class="keycap"><div>&#x21B2;</div></div></td>';
+		markup += '<th>pause</th><td><div class="keycap"><div>'+(isMobile?"&#128337;":"&#x21B2;")+'</div></div></td>';
 		markup += '<td>&nbsp;</td>';
 		markup += '<th>undo</th><td><div class="keycap"><div>esc</div></div></td>';
 		markup += '</tr>';
@@ -306,6 +307,7 @@ function hide_book(anims){
 		book_spr.gotoAndStop(Math.round(value));
 	});
 	close_twn.onMotionFinished = function(){
+		document.getElementById("book_menu_pages").style.display="none";
 		new AdvTween(Cubic.prototype.easeOut, 1, 0, 12, false, fall_raise_book);
 		chain_anims(anims);
 	}
@@ -1337,6 +1339,11 @@ function handle_mode1_up(evt){
 function mousedown(evt){
 	if(!enabled) return;
 	if(evt.clientY < 55){
+		var stopwatch = document.getElementById("stopwatch");
+		if(evt.clientX > stopwatch.offsetLeft && evt.clientX < stopwatch.offsetLeft+stopwatch.offsetWidth){
+			pause_game();
+			return;
+		}
 		setting_control = evt.clientX > ctrl_pos[0] && evt.clientX < ctrl_pos[2];
 		return;
 	} 
@@ -1496,6 +1503,12 @@ function count_move(){
 	change_display("move",moves,++moves);
 }
 
+function pause_game(){
+	if(!enabled) return;
+	enabled = false;		
+	chain_anims([[hide_towers, hide_classicbar, unblur_room], wall2desk, show_book, show_book_menu]);
+	paused_time = new Date();
+}
 
 document.onkeydown = function (evt){
 	console.log(evt.keyCode);
@@ -1514,10 +1527,7 @@ document.onkeydown = function (evt){
 	}
 
 	if(enabled && evt.keyCode == 13){ //enter
-		// PAUSING GAME!
-		enabled = false;		
-		chain_anims([[hide_towers, hide_classicbar, unblur_room], wall2desk, show_book, show_book_menu]);
-		paused_time = new Date();
+		pause_game();
 	}
 
 	if(mode == 2 && enabled){
